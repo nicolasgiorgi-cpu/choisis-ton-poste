@@ -21,7 +21,7 @@ Site statique (HTML/CSS/JS, sans installation) pour que les enfants découvrent 
 
 Le site n'est pas référencé par les moteurs de recherche (balise `noindex`) : seules les personnes qui ont le lien le trouvent.
 
-Pour modifier ensuite : ouvre le fichier sur GitHub, icône crayon, modifie, **Commit**. Le site se met à jour en 1 minute.
+Pour modifier ensuite : ouvre le fichier sur GitHub, icône crayon, modifie, **Commit**. Le site se met à jour en 1 minute. Dans `index.html`, augmente le numéro `?v=` des fichiers modifiés pour que les téléphones ne gardent pas l'ancienne version en cache.
 
 ## Le formulaire (Google Form)
 

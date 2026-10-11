@@ -45,6 +45,7 @@
     return CREST + '<svg viewBox="0 0 100 100" aria-hidden="true">' + (SYM[p.emblem] || "") + "</svg>";
   }
   var ICON = {
+    feinte: '<path d="M3 18l5-6 4 4 8-10"/><path d="M15 6h5v5"/>',
     colonne: '<path d="M5 7h14M6 7l1.5-2.5h9L18 7M8 9v8M12 9v8M16 9v8M5 19h14M4 21.5h16"/>',
     belier: '<path d="M19 4v16"/><path d="M3 12h11M10 8l4 4-4 4"/>',
     cible: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>',
@@ -115,7 +116,7 @@
   }
 
   function renderGrid() {
-    var html = POSTES.filter(visible).map(function (p) { return cardHTML(p, false); }).join("");
+    var html = quizCardHTML() + POSTES.filter(visible).map(function (p) { return cardHTML(p, false); }).join("");
     html += '<div class="top3-card"><strong>TOP 3</strong><em>1, 2 ou 3 postes</em><span>Classe jusqu\'à 3 postes dans l\'ordre. Un seul ou deux te tentent vraiment ? C\'est très bien aussi, tu peux envoyer comme ça.</span></div>';
     $("#grid").innerHTML = html;
     bindTilt($("#grid"));
@@ -327,7 +328,7 @@
   }
 
   function closeOverlays() {
-    var open = [detail, $("#form")].filter(function (el) { return !el.hidden; });
+    var open = [detail, $("#form"), $("#quiz")].filter(function (el) { return !el.hidden; });
     if (!open.length) return;
     open.forEach(function (el) {
       el.classList.add("closing");
@@ -455,6 +456,172 @@
     var t = $("#f-title"); if (t) t.focus({ preventScroll: true });
   }
 
+  /* ---------- aide-moi à choisir : petit test ---------- */
+  /* chaque réponse donne des points aux postes (w) ; « why » s'affiche dans le résultat */
+  var P = "pilier", T = "talonneur", L = "troisieme-ligne", N = "demi-de-melee", O = "ouvreur", C = "centre", A = "ailier";
+  function W() { var o = {}; for (var i = 0; i < arguments.length; i += 2) o[arguments[i]] = arguments[i + 1]; return o; }
+  var QUIZ = [
+    { q: "Sur le terrain, ce que tu préfères…", opts: [
+      { t: "Pousser et aller au contact", i: "belier", w: W(P, 3, T, 2, L, 1), why: "le contact" },
+      { t: "Plaquer et récupérer le ballon", i: "griffe", w: W(L, 3, C, 2, T, 1), why: "plaquer et récupérer" },
+      { t: "Courir vite et marquer des essais", i: "turbo", w: W(A, 3, C, 1, T, 1), why: "courir et marquer" },
+      { t: "Faire des passes, toucher plein de ballons", i: "eclair", w: W(N, 3, O, 1, C, 1), why: "les passes" },
+      { t: "Taper au pied", i: "pied", w: W(O, 3, N, 1), why: "le jeu au pied" },
+      { t: "Foncer pour percer la défense", i: "perce", w: W(C, 3, L, 1, P, 1), why: "percer la défense" }
+    ] },
+    { q: "Ton point fort\u00a0?", opts: [
+      { t: "Je suis costaud, dur à faire tomber", i: "bouclier", w: W(P, 3, C, 1, T, 1, L, 1), why: "ton côté costaud" },
+      { t: "Je suis très rapide", i: "turbo", w: W(A, 3, N, 1, T, 1), why: "ta vitesse" },
+      { t: "J'ai de l'énergie à revendre", i: "radar", w: W(L, 3, N, 2, T, 1), why: "ton énergie" },
+      { t: "J'esquive et je feinte", i: "feinte", w: W(A, 2, O, 2, N, 1, C, 1), why: "tes feintes" },
+      { t: "J'ai des mains très adroites", i: "aimant", w: W(N, 2, T, 2, O, 1, C, 1), why: "tes mains adroites" }
+    ] },
+    { q: "En défense, ton truc c'est…", opts: [
+      { t: "Plaquer fort, même les plus grands", i: "bouclier", w: W(C, 3, L, 2, P, 1), why: "les gros plaquages" },
+      { t: "Être le premier sur le ballon au sol", i: "aimant", w: W(L, 3, T, 2, N, 1), why: "gratter les ballons" },
+      { t: "Tenir le bloc avec les copains (mêlée, maul)", i: "colonne", w: W(P, 3, T, 2, L, 1), why: "tenir le bloc" },
+      { t: "Rattraper celui qui s'échappe", i: "turbo", w: W(A, 3, O, 1, N, 1), why: "rattraper les échappés" }
+    ] },
+    { q: "Ballon en main, tu…", opts: [
+      { t: "Fonces dans le tas", i: "belier", w: W(P, 2, C, 2, L, 1, T, 1), why: "foncer dans le tas" },
+      { t: "Cherches l'espace et tu sprintes", i: "turbo", w: W(A, 3, C, 1), why: "sprinter dans l'espace" },
+      { t: "Fais la passe au bon moment", i: "eclair", w: W(N, 2, O, 2, C, 1), why: "la passe au bon moment" },
+      { t: "Tapes au pied pour gagner du terrain", i: "pied", w: W(O, 3, N, 1), why: "gagner du terrain au pied" }
+    ] },
+    { q: "Dans l'équipe, tu…", opts: [
+      { t: "Parles et organises le jeu", i: "oeil", w: W(O, 3, N, 2), why: "organiser le jeu" },
+      { t: "Ne lâches jamais rien", i: "colonne", w: W(P, 2, L, 2, T, 1), why: "ne rien lâcher" },
+      { t: "Finis les actions et marques", i: "essai", w: W(A, 3, C, 1), why: "finir les actions" },
+      { t: "Aimes les gestes précis (lancer en touche, tir au but)", i: "cible", w: W(T, 3, O, 2), why: "les gestes précis" },
+      { t: "Veux toujours être au cœur de l'action", i: "radar", w: W(T, 2, N, 2, L, 1), why: "être au cœur de l'action" }
+    ] }
+  ];
+  var QMAX = 2; /* réponses possibles par question */
+  var quizEl = $("#quiz");
+  var quiz = { step: 0, ans: [] };
+  if (state.quiz && Array.isArray(state.quiz.ans) && state.quiz.ans.length === QUIZ.length) {
+    quiz.ans = state.quiz.ans.map(function (a) { return Array.isArray(a) ? a : []; });
+    quiz.step = QUIZ.length; /* test déjà fait : on montre le résultat */
+  }
+  function quizDone() { return !!(state.quiz && state.quiz.ans && state.quiz.ans.length === QUIZ.length); }
+
+  function quizResults() {
+    var res = POSTES.map(function (p, idx) {
+      var raw = 0, ideal = 0, whys = [];
+      QUIZ.forEach(function (Q, k) {
+        var best = 0, sel = quiz.ans[k] || [];
+        Q.opts.forEach(function (o, j) {
+          var w = o.w[p.id] || 0;
+          if (w > best) best = w;
+          if (w && sel.indexOf(j) >= 0) { raw += w; whys.push({ t: o.why, w: w }); }
+        });
+        ideal += best;
+      });
+      whys.sort(function (a, b) { return b.w - a.w; });
+      return { p: p, idx: idx, raw: raw, pct: ideal ? Math.min(100, Math.round(100 * raw / ideal)) : 0, whys: whys.slice(0, 3).map(function (x) { return x.t; }) };
+    });
+    res.sort(function (a, b) { return b.pct - a.pct || b.raw - a.raw || a.idx - b.idx; });
+    return res.slice(0, 3);
+  }
+
+  var Q_SYM = '<g fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M38 38c0-8 5.5-13 12-13s12 4.5 12 11c0 9-12 9.5-12 19"/></g><circle cx="50" cy="68" r="4.5" fill="currentColor"/>';
+  function quizCardHTML() {
+    var last = "";
+    if (quizDone()) {
+      last = '<span class="qc__last">Ton résultat : ' + quizResults().map(function (x) { return esc(x.p.nom); }).join(" · ") + "</span>";
+    }
+    return '<div class="tilt tilt--quiz" style="--c:#38E8FF;--d:#FF4FA3;--glow2:rgba(56,232,255,.22)">' +
+      '<button type="button" class="card card--quiz" data-quiz aria-label="Aide-moi à choisir : 5 questions pour trouver les postes faits pour toi">' +
+      '<span class="card__in">' +
+      '<span class="qc__em">' + CREST + '<svg viewBox="0 0 100 100" aria-hidden="true">' + Q_SYM + "</svg></span>" +
+      '<span class="qc__txt"><span class="qc__k">PAS SÛR ? · 5 QUESTIONS</span>' +
+      '<span class="qc__t">Aide-moi à choisir</span>' +
+      '<span class="qc__s">Dis-nous ce que tu aimes faire, on te propose 3 postes.</span>' + last + "</span>" +
+      '<span class="qc__go" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>' +
+      '<span class="card__holo"></span><span class="card__shine"></span></span></button></div>';
+  }
+
+  function quizHead() {
+    return '<div class="f-head"><button type="button" class="back" data-close><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>POSTES</button><span class="kicker">AIDE-MOI À CHOISIR</span></div>';
+  }
+  function quizQuestionHTML(anim) {
+    var k = quiz.step, Q = QUIZ[k], sel = quiz.ans[k] || [];
+    var bars = QUIZ.map(function (x, i) { return '<i class="' + (i < k ? "done" : i === k ? "on" : "") + '"></i>'; }).join("");
+    var opts = Q.opts.map(function (o, j) {
+      var on = sel.indexOf(j) >= 0;
+      return '<button type="button" class="qopt' + (on ? " on" : "") + '" data-qopt="' + j + '" aria-pressed="' + on + '">' +
+        '<span class="qopt__ic">' + icon(o.i) + '</span><span class="qopt__t">' + esc(o.t) + '</span><span class="qopt__ck" aria-hidden="true"></span></button>';
+    }).join("");
+    var last = k === QUIZ.length - 1;
+    return '<div class="q-wrap">' + quizHead() +
+      '<div class="q-body' + (anim ? " q-anim" : "") + '">' +
+      (k === 0 ? '<p class="note">5 petites questions sur ce que tu aimes faire. À la fin, on te propose les 3 postes qui te vont le mieux.</p>' : "") +
+      '<div class="q-prog"><span class="kicker">QUESTION ' + (k + 1) + "/" + QUIZ.length + '</span><span class="q-bars" aria-hidden="true">' + bars + "</span></div>" +
+      '<h2 class="q-title" id="q-title" tabindex="-1">' + esc(Q.q) + "</h2>" +
+      '<p class="q-sub">Choisis 1 ou 2 réponses</p>' +
+      '<div class="qopts" role="group" aria-labelledby="q-title">' + opts + "</div></div>" +
+      '<div class="q-nav"><div class="q-nav__in">' +
+      (k > 0 ? '<button type="button" class="back q-prev" data-qprev aria-label="Question précédente"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>' : "") +
+      '<button type="button" class="btn-next" data-qnext' + (sel.length ? "" : " disabled") + ">" + (last ? "Voir mes postes" : "Suivant") + "</button>" +
+      "</div></div></div>";
+  }
+  function quizResultsHTML(anim) {
+    var r = quizResults();
+    var ids = r.map(function (x) { return x.p.id; });
+    var kept = top3.join() === ids.join();
+    var items = r.map(function (x, i) {
+      return '<div class="qres__item' + (i === 0 ? " qres__item--first" : "") + '" style="' + vars(x.p) + '">' +
+        '<div class="qres__lbl"><b>N°' + (i + 1) + "</b><span>" + x.pct + "\u00a0% compatible</span></div>" +
+        '<div class="qres__meter" aria-hidden="true"><i style="width:' + Math.max(4, x.pct) + '%"></i></div>' +
+        cardHTML(x.p, false) +
+        (x.whys.length ? '<p class="qres__why"><b>Ça colle avec :</b> ' + x.whys.map(esc).join(" · ") + "</p>" : "") +
+        "</div>";
+    }).join("");
+    return '<div class="q-wrap">' + quizHead() +
+      '<div class="q-body' + (anim ? " q-anim" : "") + '">' +
+      '<span class="kicker">TON RÉSULTAT</span>' +
+      '<h2 class="q-title" id="q-title" tabindex="-1">Faits pour toi</h2>' +
+      '<p class="note">Voici les 3 postes qui collent le mieux à tes réponses, du plus au moins compatible. C\'est une piste : touche une carte pour la découvrir, regarde les vidéos, et choisis toi-même.</p>' +
+      '<div class="qres">' + items + "</div>" +
+      '<div class="q-actions">' +
+      (kept
+        ? '<p class="okhint">✓ Ces 3 postes sont dans tes choix. Tu peux changer l\'ordre ou en retirer avant d\'envoyer.</p><button type="button" class="btn-next" data-goform>Envoyer mes choix</button>'
+        : '<button type="button" class="btn-next" data-qkeep>Garder ces 3 postes</button>' +
+          '<p class="q-small">Ils vont dans tes choix' + (top3.length ? " (à la place de tes choix actuels)" : "") + '. Tu pourras changer l\'ordre ou en retirer avant d\'envoyer.</p>') +
+      '<div class="q-row"><button type="button" class="btn-ghost" data-qreset>Refaire le test</button><button type="button" class="btn-ghost" data-close>Tous les postes</button></div>' +
+      "</div></div></div>";
+  }
+  function renderQuiz(anim) {
+    quizEl.innerHTML = quiz.step >= QUIZ.length ? quizResultsHTML(anim) : quizQuestionHTML(anim);
+    bindTilt(quizEl);
+  }
+  var quizY = 0; /* on retrouve sa place en revenant d'une carte */
+  function openQuiz(y) {
+    lastFocus = document.activeElement;
+    renderQuiz(false);
+    quizEl.hidden = false; quizEl.scrollTop = y || 0;
+    document.body.classList.add("locked");
+    quizEl.classList.add("anim-in");
+    setTimeout(function () { quizEl.classList.remove("anim-in"); }, 320);
+    var t = $("#q-title"); if (t) t.focus({ preventScroll: true });
+  }
+  function quizStep(n) {
+    quiz.step = n;
+    if (n >= QUIZ.length) { state.quiz = { ans: quiz.ans }; save(); renderGrid(); }
+    renderQuiz(true);
+    quizEl.scrollTop = 0;
+    var t = $("#q-title"); if (t) t.focus({ preventScroll: true });
+  }
+  function quizToggle(j) {
+    var k = quiz.step, sel = (quiz.ans[k] || []).slice(), i = sel.indexOf(j);
+    if (i >= 0) sel.splice(i, 1);
+    else { sel.push(j); if (sel.length > QMAX) sel.shift(); /* la plus ancienne réponse laisse sa place */ }
+    quiz.ans[k] = sel;
+    var y = quizEl.scrollTop;
+    renderQuiz(false);
+    quizEl.scrollTop = y;
+  }
+
   /* ---------- navigation (bouton retour du téléphone compris) ---------- */
   var pendingEl = null;
   function route() {
@@ -463,16 +630,22 @@
       if (!form.hidden) { form.hidden = true; }
       var id = h.slice(6);
       if (detail.getAttribute("data-id") !== id) openDetail(id, pendingEl);
+      if (!quizEl.hidden) { quizY = quizEl.scrollTop; quizEl.hidden = true; } /* après openDetail : la carte touchée sert de point de départ à l'animation */
     } else if (h === "valider") {
       if (!detail.hidden) { detail.hidden = true; detail.innerHTML = ""; detail.removeAttribute("data-id"); }
+      quizEl.hidden = true;
       if (form.hidden) openForm();
+    } else if (h === "aide") {
+      if (!detail.hidden) { detail.hidden = true; detail.innerHTML = ""; detail.removeAttribute("data-id"); }
+      form.hidden = true;
+      if (quizEl.hidden) { openQuiz(quizY); quizY = 0; } else renderQuiz(false);
     } else {
       closeOverlays();
     }
     pendingEl = null;
   }
   function go(hash) { if (location.hash === hash) route(); else location.hash = hash; }
-  function back() { if (history.length > 1 && /poste\/|valider/.test(location.hash)) history.back(); else go("#/"); }
+  function back() { if (history.length > 1 && /poste\/|valider|aide/.test(location.hash)) history.back(); else go("#/"); }
 
   /* ---------- événements ---------- */
   document.addEventListener("click", function (e) {
@@ -486,6 +659,17 @@
     if ((el = t.closest("[data-move]"))) { move(+el.getAttribute("data-move"), +el.getAttribute("data-dir")); return; }
     if ((el = t.closest("#go"))) { if (!el.disabled) go("#/valider"); return; }
     if ((el = t.closest("[data-goform]"))) { go("#/valider"); return; }
+    if ((el = t.closest("[data-quiz]"))) { go("#/aide"); return; }
+    if ((el = t.closest("[data-qopt]"))) { quizToggle(+el.getAttribute("data-qopt")); return; }
+    if ((el = t.closest("[data-qnext]"))) { if (!el.disabled) quizStep(quiz.step + 1); return; }
+    if ((el = t.closest("[data-qprev]"))) { quizStep(Math.max(0, quiz.step - 1)); return; }
+    if ((el = t.closest("[data-qreset]"))) { quiz.ans = []; quizStep(0); return; }
+    if ((el = t.closest("[data-qkeep]"))) {
+      top3 = quizResults().map(function (x) { return x.p.id; }).slice(0, MAX);
+      save(); refreshAll();
+      toast("C'est noté ! Vérifie l'ordre puis envoie tes choix.");
+      return;
+    }
     if ((el = t.closest("[data-filter]"))) {
       var f = el.getAttribute("data-filter"); filters[f] = !filters[f];
       renderGrid(); renderFilters(); return;
@@ -498,7 +682,7 @@
     if (/^f-/.test(e.target.id)) save();
   });
   document.addEventListener("submit", function (e) { if (e.target.id === "f") submitForm(e); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && (!detail.hidden || !form.hidden)) back(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && (!detail.hidden || !form.hidden || !quizEl.hidden)) back(); });
   window.addEventListener("hashchange", route);
 
   var toastT;
@@ -511,6 +695,7 @@
     renderGrid(); renderFilters(); renderBar(); renderSent(); refreshDetailAction();
     if (!form.hidden && $("#picks")) $("#picks").innerHTML = picksHTML(true);
     if (!form.hidden && $("#okhint")) $("#okhint").textContent = okHint();
+    if (!quizEl.hidden && quiz.step >= QUIZ.length) renderQuiz(false);
   }
 
   /* barres de Safari / Chrome mobile : on remonte la barre du bas si elles recouvrent la page */

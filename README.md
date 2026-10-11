@@ -54,3 +54,7 @@ Utilise des photos dont tu as le droit (par ex. Wikimedia Commons, en citant l'a
 ## Changer une vidéo
 
 Dans `data.js`, remplace l'`id` (ce qui suit `watch?v=` dans l'adresse YouTube). Pour ne montrer qu'un extrait, ajoute `start: 92, end: 118` (en secondes). Si une vidéo refuse de s'afficher dans le site, c'est que son auteur bloque l'intégration : choisis-en une autre.
+
+## Le test « Aide-moi à choisir »
+
+La carte en haut de la liste lance 5 questions (1 ou 2 réponses à chaque fois). Chaque réponse donne des points aux postes ; à la fin, les 3 postes les plus compatibles s'affichent dans l'ordre, et l'enfant peut les garder dans ses choix. Les questions, les réponses et les points sont dans `app.js`, tableau `QUIZ` (P = pilier, T = talonneur, L = 3e ligne, N = demi de mêlée, O = ouvreur, C = centre, A = ailier).

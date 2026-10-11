@@ -5,7 +5,7 @@
   var CONFIG = window.CONFIG || { formAction: "", champs: {} };
   var LABELS = ["Puissance", "Vitesse", "Mains", "Plaquage", "Vision", "Jeu au pied"];
   var KEY = "m12-top3-v2";
-  var MAX = 2; /* nombre de choix demandés */
+  var MAX = 3; /* nombre de choix maximum (1 suffit pour envoyer) */
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- petites aides ---------- */
@@ -116,7 +116,7 @@
 
   function renderGrid() {
     var html = POSTES.filter(visible).map(function (p) { return cardHTML(p, false); }).join("");
-    html += '<div class="top3-card"><strong>TOP 2</strong><em>Tes 2 postes préférés</em><span>Plusieurs postes te plaisent ? C\'est normal : garde tes 2 préférés, dans l\'ordre.</span></div>';
+    html += '<div class="top3-card"><strong>TOP 3</strong><em>1, 2 ou 3 postes</em><span>Classe jusqu\'à 3 postes dans l\'ordre. Un seul ou deux te tentent vraiment ? C\'est très bien aussi, tu peux envoyer comme ça.</span></div>';
     $("#grid").innerHTML = html;
     bindTilt($("#grid"));
   }
@@ -182,13 +182,13 @@
       if (p) {
         html += '<button type="button" class="slot filled" style="' + vars(p) + '" data-goform aria-label="Choix ' + (i + 1) + " : " + esc(p.nom) + ', toucher pour modifier mes choix"><span class="slot__txt">' + (i + 1) + " · " + esc(p.code) + "</span></button>";
       } else {
-        html += '<span class="slot" aria-label="Choix ' + (i + 1) + ' vide">' + (i + 1) + "</span>";
+        html += '<span class="slot' + (i > 0 ? " slot--opt" : "") + '" aria-label="Choix ' + (i + 1) + (i > 0 ? " facultatif" : "") + ' vide">' + (i + 1) + "</span>";
       }
     }
     $("#slots").innerHTML = html;
     var go = $("#go");
-    go.disabled = top3.length < MAX;
-    go.textContent = top3.length < MAX ? top3.length + "/" + MAX : "VALIDER";
+    go.disabled = top3.length < 1;
+    go.textContent = top3.length < 1 ? "0/" + MAX : "VALIDER";
   }
 
   /* ---------- carte ouverte ---------- */
@@ -256,7 +256,7 @@
     var id = detail.getAttribute("data-id"); if (!id) return;
     var p = byId(id), r = rankOf(id), box = $("#d-ranks"), lbl = $("#d-lbl");
     if (!box) return;
-    lbl.textContent = r >= 0 ? "Choix n°" + (r + 1) + " · change de numéro si tu veux" : "Mets ce poste dans tes 2 choix :";
+    lbl.textContent = r >= 0 ? "Choix n°" + (r + 1) + " · change de numéro si tu veux" : "Mets ce poste dans tes choix (jusqu'à 3) :";
     var html = "";
     for (var k = 0; k < MAX; k++) {
       var q = byId(top3[k]), me = top3[k] === id;
@@ -355,7 +355,7 @@
     var html = "";
     for (var i = 0; i < MAX; i++) {
       var p = byId(top3[i]);
-      if (!p) { html += '<div class="pick pick--empty">CHOIX ' + (i + 1) + " · À CHOISIR</div>"; continue; }
+      if (!p) { html += '<div class="pick pick--empty">CHOIX ' + (i + 1) + (i === 0 ? " · À CHOISIR" : " · FACULTATIF") + "</div>"; continue; }
       html += '<div class="pick" style="' + vars(p) + '"><span class="pick__rank">' + (i + 1) + '</span><span class="pick__em">' + emblem(p) + "</span>" +
         '<span class="pick__txt"><b>' + esc(p.nom) + "</b><small>" + esc(p.surnom) + " · " + esc(p.cls) + "</small></span>" +
         (editable ? '<span class="pick__ctl"><button type="button" class="icon-btn" data-move="' + i + '" data-dir="-1" aria-label="Monter" ' + (i === 0 ? "disabled" : "") + '><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>' +
@@ -380,15 +380,22 @@
     el.innerHTML = '<div class="sent__ico" aria-hidden="true">' + (changed ? "!" : "✓") + "</div><div>" +
       "<b>" + (changed ? "Tu as changé tes choix : pense à les renvoyer !" : "Choix envoyés, " + esc(state.prenom || "") + " !") + "</b>" +
       "<span>Dernier envoi : " + esc(fmtDate(state.sentAt)) + ". Tu peux changer d'avis quand tu veux : c'est ton dernier envoi qui compte.</span>" +
-      (top3.length === MAX ? '<button type="button" class="sent__btn" data-goform>' + (changed ? "Renvoyer mes choix" : "Modifier mes choix") + "</button>" : "") +
+      (top3.length >= 1 ? '<button type="button" class="sent__btn" data-goform>' + (changed ? "Renvoyer mes choix" : "Modifier mes choix") + "</button>" : "") +
       "</div>";
+  }
+  function okHint() {
+    var n = top3.length;
+    if (n === 0) return "";
+    if (n >= MAX) return "✓ 3 postes choisis.";
+    return "✓ " + n + " poste" + (n > 1 ? "s" : "") + " choisi" + (n > 1 ? "s" : "") + " : c'est OK, tu peux envoyer comme ça. Tu peux aussi en ajouter " + (n === 1 ? "1 ou 2" : "1") + ".";
   }
   function renderForm() {
     form.innerHTML = '<div class="f-wrap">' +
       '<div class="f-head"><button type="button" class="back" data-close><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>COLLECTION</button><span class="kicker">ÉTAPE FINALE</span></div>' +
-      '<h2 class="f-title" id="f-title" tabindex="-1">Mes 2 choix</h2>' +
-      '<p class="note">Range tes 2 postes dans l\'ordre : ton préféré en n°1. Les éducateurs feront le choix final en tenant compte de tes vœux et de l\'équipe.</p>' +
+      '<h2 class="f-title" id="f-title" tabindex="-1">Mes choix</h2>' +
+      '<p class="note">Tu peux choisir <b>1, 2 ou 3 postes</b> : pas obligé de remplir les 3 cases. Range-les dans l\'ordre, ton préféré en n°1. Les éducateurs feront le choix final en tenant compte de tes vœux et de l\'équipe.</p>' +
       '<div class="picks" id="picks">' + picksHTML(true) + "</div>" +
+      '<p class="okhint" id="okhint">' + okHint() + "</p>" +
       '<form id="f" novalidate>' +
       '<div class="row2"><div class="field"><label for="f-prenom">Prénom</label><input id="f-prenom" name="prenom" autocomplete="given-name" required value="' + esc(draft.prenom) + '"></div>' +
       '<div class="field"><label for="f-nom">Nom</label><input id="f-nom" name="nom" autocomplete="family-name" required value="' + esc(draft.nom) + '"></div></div>' +
@@ -414,7 +421,7 @@
     e.preventDefault();
     var prenom = $("#f-prenom").value.trim(), nom = $("#f-nom").value.trim(), msg = $("#f-msg").value.trim();
     var err = $("#f-err");
-    if (top3.length < MAX) { err.textContent = "Choisis 2 postes avant d'envoyer."; return; }
+    if (top3.length < 1) { err.textContent = "Choisis au moins 1 poste avant d'envoyer."; return; }
     if (!prenom || !nom) { err.textContent = "Écris ton prénom et ton nom."; return; }
     err.textContent = "";
     var btn = $("#f-send"); btn.disabled = true; btn.textContent = "Envoi…";
@@ -429,7 +436,9 @@
     if (!formReady) { setTimeout(function () { done(true); }, 400); return; }
     var fd = new FormData(), c = CONFIG.champs;
     fd.append(c.prenom, prenom); fd.append(c.nom, nom);
-    fd.append(c.choix1, names[0]); fd.append(c.choix2, names[1]);
+    /* choix non faits : « — » (Choix 2 est obligatoire dans le Google Form) */
+    fd.append(c.choix1, names[0]); fd.append(c.choix2, names[1] || "—");
+    if (c.choix3) fd.append(c.choix3, names[2] || "—");
     if (c.message && msg) fd.append(c.message, msg);
     fetch(CONFIG.formAction, { method: "POST", mode: "no-cors", body: fd })
       .then(function () { done(true); })
@@ -501,6 +510,7 @@
   function refreshAll() {
     renderGrid(); renderFilters(); renderBar(); renderSent(); refreshDetailAction();
     if (!form.hidden && $("#picks")) $("#picks").innerHTML = picksHTML(true);
+    if (!form.hidden && $("#okhint")) $("#okhint").textContent = okHint();
   }
 
   /* barres de Safari / Chrome mobile : on remonte la barre du bas si elles recouvrent la page */

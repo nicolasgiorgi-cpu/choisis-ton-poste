@@ -1,6 +1,6 @@
 # Choisis ton poste · M12 jeu à 10
 
-Site statique (HTML/CSS/JS, sans installation) pour que les enfants découvrent les 7 postes du jeu à 10 et envoient leurs 2 postes préférés.
+Site statique (HTML/CSS/JS, sans installation) pour que les enfants découvrent les 7 postes du jeu à 10 et envoient leurs postes préférés (1 à 3).
 
 ## Contenu du dossier
 
@@ -26,6 +26,8 @@ Pour modifier ensuite : ouvre le fichier sur GitHub, icône crayon, modifie, **C
 ## Le formulaire (Google Form)
 
 Le site est branché sur le Google Form « M12 - 26/27 - Choix de postes » (questions Prénom, Nom, Choix 1, Choix 2, Choix 3, Message). Les réponses arrivent dans l'onglet **Réponses** du Form ; bouton « Associer à Sheets » pour les avoir dans une Google Sheet. Chaque envoi = une ligne datée ; c'est le dernier envoi d'un enfant qui compte.
+
+Les enfants peuvent envoyer 1, 2 ou 3 choix : un choix non fait arrive dans le Form sous la forme « — ».
 
 Ne renomme pas et ne supprime pas les questions du Form : les numéros `entry.xxx` de `config.js` changeraient. Si `config.js` est vidé, le site repasse en **mode test** (rien n'est envoyé).
 

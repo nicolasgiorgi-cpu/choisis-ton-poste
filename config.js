@@ -15,7 +15,7 @@ window.CONFIG = {
     nom: "entry.1000585772",
     choix1: "entry.321605478",
     choix2: "entry.144448490",
-    choix3: "entry.1984140708", // plus utilisé : 2 choix seulement
+    choix3: "entry.1984140708",
     message: "entry.1130469255"
   }
 };

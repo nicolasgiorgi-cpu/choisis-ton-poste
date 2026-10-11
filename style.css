@@ -164,7 +164,7 @@ h2.h{margin:0;font:italic 900 26px/1 var(--f-title);text-transform:uppercase}
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
 }
 .bar__label{font:600 10px/1.2 var(--f-hud);letter-spacing:.12em;color:var(--dim);width:44px;flex:none}
-.slots{flex:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.slots{flex:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .slot{
   height:52px;border:1px dashed var(--line2);background:transparent;display:flex;align-items:center;justify-content:center;gap:4px;
   font:700 12px/1 var(--f-hud);color:#4A5578;padding:0 4px;cursor:default;min-width:0;
@@ -378,3 +378,8 @@ h3.sh{margin:0 0 10px;font:italic 900 25px/1 var(--f-title);text-transform:upper
 .d-head .chip{flex:none;margin-left:auto}
 .d-head.scrolled .chip{display:none}
 .f-head{position:sticky;top:0;z-index:5;margin:-20px -16px 0;padding:14px 16px;background:rgba(7,10,18,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+
+.slot--opt{opacity:.6}
+.bar__label small{display:block;margin-top:3px;font-size:10px;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.okhint{margin-top:10px;font:600 14px/1.35 var(--f-body,inherit);color:var(--cyan)}
+.okhint:empty{display:none}

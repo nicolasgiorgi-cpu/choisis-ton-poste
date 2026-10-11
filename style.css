@@ -38,7 +38,6 @@ h1.big{
 .lead{margin:0;color:var(--muted);font-size:16px;max-width:560px}
 
 .hero-zone{display:grid;gap:22px;margin-top:6px}
-@media(min-width:820px){.hero-zone{grid-template-columns:1fr 320px;align-items:center}}
 
 .steps{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:8px}
 .steps li{display:flex;align-items:center;gap:12px;background:rgba(14,20,40,.7);border:1px solid var(--line);padding:10px 12px}
@@ -52,6 +51,16 @@ h1.big{
 .section-head{display:flex;justify-content:space-between;align-items:baseline;margin:34px 0 12px;gap:10px}
 h2.h{margin:0;font:italic 900 26px/1 var(--f-title);text-transform:uppercase}
 .section-head small{color:var(--dim);font-size:13px}
+.section-head{flex-wrap:wrap;align-items:center}
+.filters{display:flex;gap:8px}
+.fchip{
+  height:40px;padding:0 14px;border:1px solid var(--line2);background:transparent;color:var(--muted);cursor:pointer;
+  font:600 12px/1 var(--f-hud);letter-spacing:.08em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px;
+  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
+}
+.fchip::before{content:"";width:10px;height:10px;border:1.5px solid currentColor;box-sizing:border-box}
+.fchip[aria-pressed="true"]{background:var(--cyan);border-color:var(--cyan);color:var(--bg)}
+.fchip[aria-pressed="true"]::before{background:currentColor}
 
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 12px}
 @media(min-width:700px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}}

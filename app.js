@@ -115,16 +115,21 @@
   }
 
   function renderGrid() {
-    var html = POSTES.map(function (p) { return cardHTML(p, false); }).join("");
+    var html = POSTES.filter(visible).map(function (p) { return cardHTML(p, false); }).join("");
     html += '<div class="top3-card"><strong>TOP 2</strong><em>Tes 2 postes préférés</em><span>Plusieurs postes te plaisent ? C\'est normal : garde tes 2 préférés, dans l\'ordre.</span></div>';
     $("#grid").innerHTML = html;
     bindTilt($("#grid"));
   }
-  var featuredId = POSTES.length ? POSTES[Math.floor(Math.random() * POSTES.length)].id : null;
-  function renderFeature() {
-    var p = byId(featuredId); if (!p) return;
-    $("#feature").innerHTML = cardHTML(p, true);
-    bindTilt($("#feature"));
+  /* filtres Avants / Trois-quarts : aucun ou les deux actifs = tous les postes */
+  var filters = {};
+  function visible(p) {
+    var on = Object.keys(filters).filter(function (k) { return filters[k]; });
+    return !on.length || on.indexOf(p.groupe) >= 0;
+  }
+  function renderFilters() {
+    Array.prototype.forEach.call(document.querySelectorAll("[data-filter]"), function (b) {
+      b.setAttribute("aria-pressed", filters[b.getAttribute("data-filter")] ? "true" : "false");
+    });
   }
 
   /* effet carte brillante (holographique) + inclinaison : souris ET doigt */
@@ -472,6 +477,10 @@
     if ((el = t.closest("[data-move]"))) { move(+el.getAttribute("data-move"), +el.getAttribute("data-dir")); return; }
     if ((el = t.closest("#go"))) { if (!el.disabled) go("#/valider"); return; }
     if ((el = t.closest("[data-goform]"))) { go("#/valider"); return; }
+    if ((el = t.closest("[data-filter]"))) {
+      var f = el.getAttribute("data-filter"); filters[f] = !filters[f];
+      renderGrid(); renderFilters(); return;
+    }
   });
   document.addEventListener("input", function (e) {
     if (e.target.id === "f-prenom") draft.prenom = state.prenom = e.target.value;
@@ -490,7 +499,7 @@
   }
 
   function refreshAll() {
-    renderGrid(); renderFeature(); renderBar(); renderSent(); refreshDetailAction();
+    renderGrid(); renderFilters(); renderBar(); renderSent(); refreshDetailAction();
     if (!form.hidden && $("#picks")) $("#picks").innerHTML = picksHTML(true);
   }
 

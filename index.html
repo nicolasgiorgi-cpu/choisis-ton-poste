@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Barlow+Condensed:ital,wght@0,600;0,800;1,800;1,900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
 <main class="page">
@@ -31,17 +31,16 @@
           <li><b>3</b><span>Garde tes 2 préférés et valide</span></li>
         </ol>
       </div>
-      <div class="feature">
-        <div id="feature" style="width:min(290px,80vw)"></div>
-        <span class="hint">Touche une carte pour l'ouvrir</span>
-      </div>
     </div>
 
     <div class="sent" id="sent" hidden></div>
 
     <div class="section-head">
       <h2 class="h">Les 7 postes</h2>
-      <small>Avants · Trois-quarts</small>
+      <div class="filters" role="group" aria-label="Filtrer les postes">
+        <button type="button" class="fchip" data-filter="Avants" aria-pressed="false">Avants</button>
+        <button type="button" class="fchip" data-filter="Trois-quarts" aria-pressed="false">Trois-quarts</button>
+      </div>
     </div>
     <div class="grid" id="grid"></div>
 
@@ -59,8 +58,8 @@
 <div class="overlay" id="form" role="dialog" aria-modal="true" aria-labelledby="f-title" hidden></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="config.js?v=6"></script>
-<script src="data.js?v=6"></script>
-<script src="app.js?v=6"></script>
+<script src="config.js?v=7"></script>
+<script src="data.js?v=7"></script>
+<script src="app.js?v=7"></script>
 </body>
 </html>

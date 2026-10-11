@@ -5,6 +5,7 @@
   var CONFIG = window.CONFIG || { formAction: "", champs: {} };
   var LABELS = ["Puissance", "Vitesse", "Mains", "Plaquage", "Vision", "Jeu au pied"];
   var KEY = "m12-top3-v2";
+  var MAX = 2; /* nombre de choix demandés */
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- petites aides ---------- */
@@ -72,22 +73,22 @@
   var SKYLINE = '<svg class="skyline" viewBox="0 0 390 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 80V50h22V34h16v16h12V24h24v56h10V40h18V28h14v52h12V44h26V20h16v60h10V52h20V34h12v46h14V38h24V26h14v54h12V46h18V30h12v50h14V42h20V32h16v48z" fill="#070A12"/></svg>';
   var SILHOUETTE = '<svg viewBox="0 0 110 130" aria-hidden="true"><circle cx="55" cy="42" r="24" fill="currentColor"/><path d="M8 130c4-34 24-52 47-52s43 18 47 52z" fill="currentColor"/></svg>';
 
-  /* ---------- état : top 3 ---------- */
-  /* tout est gardé sur le téléphone : top 3, prénom, nom, dernier envoi */
+  /* ---------- état : les choix ---------- */
+  /* tout est gardé sur le téléphone : choix, prénom, nom, dernier envoi */
   var state = store(true) || {};
   if (Array.isArray(state)) state = { top3: state };
-  var top3 = (state.top3 || []).filter(function (id) { return byId(id); }).slice(0, 3);
+  var top3 = (state.top3 || []).filter(function (id) { return byId(id); }).slice(0, MAX);
   function save() { state.top3 = top3; store(false, state); }
   function rankOf(id) { return top3.indexOf(id); }
   function addPick(id) {
-    if (rankOf(id) >= 0 || top3.length >= 3) return;
+    if (rankOf(id) >= 0 || top3.length >= MAX) return;
     top3.push(id); save(); refreshAll();
     toast("Ajouté en choix n°" + top3.length + " !");
   }
   function removePick(id) {
     var i = rankOf(id); if (i < 0) return;
     top3.splice(i, 1); save(); refreshAll();
-    toast("Retiré de ton top 3");
+    toast("Retiré de tes choix");
   }
   function move(i, dir) {
     var j = i + dir; if (j < 0 || j >= top3.length) return;
@@ -115,7 +116,7 @@
 
   function renderGrid() {
     var html = POSTES.map(function (p) { return cardHTML(p, false); }).join("");
-    html += '<div class="top3-card"><strong>TOP 3</strong><em>Forme ton équipe</em><span>Plusieurs postes te plaisent ? C\'est normal : choisis-en 3, dans l\'ordre.</span></div>';
+    html += '<div class="top3-card"><strong>TOP 2</strong><em>Tes 2 postes préférés</em><span>Plusieurs postes te plaisent ? C\'est normal : garde tes 2 préférés, dans l\'ordre.</span></div>';
     $("#grid").innerHTML = html;
     bindTilt($("#grid"));
   }
@@ -171,18 +172,18 @@
   /* ---------- barre du bas ---------- */
   function renderBar() {
     var html = "";
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < MAX; i++) {
       var p = byId(top3[i]);
       if (p) {
-        html += '<button type="button" class="slot filled" style="' + vars(p) + '" data-goform aria-label="Choix ' + (i + 1) + " : " + esc(p.nom) + ', toucher pour modifier mon top 3"><span class="slot__txt">' + (i + 1) + " · " + esc(p.code) + "</span></button>";
+        html += '<button type="button" class="slot filled" style="' + vars(p) + '" data-goform aria-label="Choix ' + (i + 1) + " : " + esc(p.nom) + ', toucher pour modifier mes choix"><span class="slot__txt">' + (i + 1) + " · " + esc(p.code) + "</span></button>";
       } else {
         html += '<span class="slot" aria-label="Choix ' + (i + 1) + ' vide">' + (i + 1) + "</span>";
       }
     }
     $("#slots").innerHTML = html;
     var go = $("#go");
-    go.disabled = top3.length < 3;
-    go.textContent = top3.length < 3 ? top3.length + "/3" : "VALIDER";
+    go.disabled = top3.length < MAX;
+    go.textContent = top3.length < MAX ? top3.length + "/" + MAX : "VALIDER";
   }
 
   /* ---------- carte ouverte ---------- */
@@ -241,24 +242,24 @@
     if (i === k) return;
     if (i >= 0) top3.splice(i, 1);
     top3.splice(Math.min(k, top3.length), 0, id);
-    var bumped = top3.length > 3 ? top3.pop() : null;
+    var bumped = top3.length > MAX ? top3.pop() : null;
     save(); refreshAll();
-    toast(byId(id).nom + " en choix n°" + (rankOf(id) + 1) + (bumped ? " · " + byId(bumped).nom + " sort du top 3" : ""));
+    toast(byId(id).nom + " en choix n°" + (rankOf(id) + 1) + (bumped ? " · " + byId(bumped).nom + " sort de tes choix" : ""));
   }
 
   function refreshDetailAction() {
     var id = detail.getAttribute("data-id"); if (!id) return;
     var p = byId(id), r = rankOf(id), box = $("#d-ranks"), lbl = $("#d-lbl");
     if (!box) return;
-    lbl.textContent = r >= 0 ? "Choix n°" + (r + 1) + " · change de numéro si tu veux" : "Mets ce poste dans ton top 3 :";
+    lbl.textContent = r >= 0 ? "Choix n°" + (r + 1) + " · change de numéro si tu veux" : "Mets ce poste dans tes 2 choix :";
     var html = "";
-    for (var k = 0; k < 3; k++) {
+    for (var k = 0; k < MAX; k++) {
       var q = byId(top3[k]), me = top3[k] === id;
       html += '<button type="button" class="rk' + (me ? " me" : q ? " taken" : "") + '" data-rank="' + k + '" style="' + vars(q || p) + '"' +
         ' aria-label="Mettre en choix ' + (k + 1) + (q && !me ? " (à la place de " + esc(q.nom) + ")" : "") + '"' + (me ? ' aria-current="true"' : "") + ">" +
         "<b>" + (k + 1) + "</b><small>" + (me ? "CE POSTE" : q ? esc(q.code) : "LIBRE") + "</small></button>";
     }
-    if (r >= 0) html += '<button type="button" class="rk rk--x" data-remove="' + id + '" aria-label="Retirer de mon top 3"><b>×</b><small>RETIRER</small></button>';
+    if (r >= 0) html += '<button type="button" class="rk rk--x" data-remove="' + id + '" aria-label="Retirer de mes choix"><b>×</b><small>RETIRER</small></button>';
     box.innerHTML = html;
     detail.style.cssText = vars(p);
   }
@@ -347,7 +348,7 @@
 
   function picksHTML(editable) {
     var html = "";
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < MAX; i++) {
       var p = byId(top3[i]);
       if (!p) { html += '<div class="pick pick--empty">CHOIX ' + (i + 1) + " · À CHOISIR</div>"; continue; }
       html += '<div class="pick" style="' + vars(p) + '"><span class="pick__rank">' + (i + 1) + '</span><span class="pick__em">' + emblem(p) + "</span>" +
@@ -372,16 +373,16 @@
     el.hidden = false;
     var changed = !sameAsSent();
     el.innerHTML = '<div class="sent__ico" aria-hidden="true">' + (changed ? "!" : "✓") + "</div><div>" +
-      "<b>" + (changed ? "Tu as changé ton top 3 : pense à le renvoyer !" : "Choix envoyés, " + esc(state.prenom || "") + " !") + "</b>" +
+      "<b>" + (changed ? "Tu as changé tes choix : pense à les renvoyer !" : "Choix envoyés, " + esc(state.prenom || "") + " !") + "</b>" +
       "<span>Dernier envoi : " + esc(fmtDate(state.sentAt)) + ". Tu peux changer d'avis quand tu veux : c'est ton dernier envoi qui compte.</span>" +
-      (top3.length === 3 ? '<button type="button" class="sent__btn" data-goform>' + (changed ? "Renvoyer mon top 3" : "Modifier mes choix") + "</button>" : "") +
+      (top3.length === MAX ? '<button type="button" class="sent__btn" data-goform>' + (changed ? "Renvoyer mes choix" : "Modifier mes choix") + "</button>" : "") +
       "</div>";
   }
   function renderForm() {
     form.innerHTML = '<div class="f-wrap">' +
       '<div class="f-head"><button type="button" class="back" data-close><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>COLLECTION</button><span class="kicker">ÉTAPE FINALE</span></div>' +
-      '<h2 class="f-title" id="f-title" tabindex="-1">Mon top 3</h2>' +
-      '<p class="note">Range tes 3 postes dans l\'ordre : ton préféré en n°1. Les éducateurs feront le choix final en tenant compte de tes vœux et de l\'équipe.</p>' +
+      '<h2 class="f-title" id="f-title" tabindex="-1">Mes 2 choix</h2>' +
+      '<p class="note">Range tes 2 postes dans l\'ordre : ton préféré en n°1. Les éducateurs feront le choix final en tenant compte de tes vœux et de l\'équipe.</p>' +
       '<div class="picks" id="picks">' + picksHTML(true) + "</div>" +
       '<form id="f" novalidate>' +
       '<div class="row2"><div class="field"><label for="f-prenom">Prénom</label><input id="f-prenom" name="prenom" autocomplete="given-name" required value="' + esc(draft.prenom) + '"></div>' +
@@ -408,7 +409,7 @@
     e.preventDefault();
     var prenom = $("#f-prenom").value.trim(), nom = $("#f-nom").value.trim(), msg = $("#f-msg").value.trim();
     var err = $("#f-err");
-    if (top3.length < 3) { err.textContent = "Il te faut 3 postes dans ton top 3."; return; }
+    if (top3.length < MAX) { err.textContent = "Choisis 2 postes avant d'envoyer."; return; }
     if (!prenom || !nom) { err.textContent = "Écris ton prénom et ton nom."; return; }
     err.textContent = "";
     var btn = $("#f-send"); btn.disabled = true; btn.textContent = "Envoi…";
@@ -423,7 +424,7 @@
     if (!formReady) { setTimeout(function () { done(true); }, 400); return; }
     var fd = new FormData(), c = CONFIG.champs;
     fd.append(c.prenom, prenom); fd.append(c.nom, nom);
-    fd.append(c.choix1, names[0]); fd.append(c.choix2, names[1]); fd.append(c.choix3, names[2]);
+    fd.append(c.choix1, names[0]); fd.append(c.choix2, names[1]);
     if (c.message && msg) fd.append(c.message, msg);
     fetch(CONFIG.formAction, { method: "POST", mode: "no-cors", body: fd })
       .then(function () { done(true); })
@@ -434,7 +435,7 @@
     form.innerHTML = '<div class="f-wrap merci">' +
       '<span class="kicker">' + (formReady ? "CHOIX ENREGISTRÉS" : "MODE TEST · RIEN N'A ÉTÉ ENVOYÉ") + "</span>" +
       '<h2 class="f-title" id="f-title" tabindex="-1">Bravo ' + esc(prenom) + "&nbsp;!</h2>" +
-      '<p class="lead">Ton top 3 est entre les mains des éducateurs. Tu changes d\'avis ? Reviens sur ce site avec ce téléphone, modifie ton top 3 et renvoie-le : c\'est le dernier envoi qui compte.</p>' +
+      '<p class="lead">Tes choix sont entre les mains des éducateurs. Tu changes d\'avis ? Reviens sur ce site avec ce téléphone, modifie tes choix et renvoie-les : c\'est le dernier envoi qui compte.</p>' +
       '<div class="picks">' + picksHTML(false) + "</div>" +
       '<button type="button" class="back" data-close style="margin-top:6px">REVOIR LES CARTES</button></div>';
     var t = $("#f-title"); if (t) t.focus({ preventScroll: true });

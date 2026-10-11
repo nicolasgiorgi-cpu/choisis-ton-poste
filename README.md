@@ -1,6 +1,6 @@
 # Choisis ton poste · M12 jeu à 10
 
-Site statique (HTML/CSS/JS, sans installation) pour que les enfants découvrent les 7 postes du jeu à 10 et envoient leur top 3.
+Site statique (HTML/CSS/JS, sans installation) pour que les enfants découvrent les 7 postes du jeu à 10 et envoient leurs 2 postes préférés.
 
 ## Contenu du dossier
 
@@ -10,7 +10,7 @@ Site statique (HTML/CSS/JS, sans installation) pour que les enfants découvrent 
 | `style.css` | Le style |
 | `data.js` | **Le contenu des 7 cartes** (textes, étoiles, joueurs, vidéos) |
 | `config.js` | **Le branchement du Google Form** |
-| `app.js` | Le fonctionnement (cartes, top 3, formulaire) |
+| `app.js` | Le fonctionnement (cartes, choix, formulaire) |
 
 ## Mettre en ligne sur GitHub Pages
 

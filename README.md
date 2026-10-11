@@ -40,7 +40,9 @@ Pour rebrancher un autre Form :
 
 (Ou envoie le lien prérempli à Claude, qui remplit `config.js` pour toi.)
 
-## Ajouter les photos des joueurs
+## Photos des joueurs
+
+Les photos viennent de Wikimedia Commons (licences libres) : dans `data.js`, champ `commons` = nom du fichier Commons, `credit` = auteur et licence (affichés sur la photo). Pour mettre ta propre photo à la place :
 
 1. Sur GitHub, **Add file › Upload files** et dépose l'image (ex. `marchand.jpg`, format portrait de préférence).
 2. Dans `data.js`, à la ligne du joueur : `photo: "marchand.jpg"`.

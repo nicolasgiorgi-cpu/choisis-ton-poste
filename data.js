@@ -2,7 +2,9 @@
    Contenu des 7 cartes postes — à modifier librement.
    - stats : 6 notes sur 100, converties en étoiles (90+ = 5, 75+ = 4, 60+ = 3, 45+ = 2, sinon 1)
      ordre : Puissance, Vitesse, Mains, Plaquage, Vision, Jeu au pied
-   - heros[].photo : nom d'une image déposée à côté de index.html (laisser "" = silhouette)
+   - heros[].commons : nom du fichier sur Wikimedia Commons (photo libre, affichée avec son crédit)
+     heros[].photo : OU nom d'une image déposée à côté de index.html (prioritaire si rempli)
+     laisser les deux vides = silhouette
    - videos : vidéos YouTube intégrées dans la page (id = ce qui suit watch?v=)
      start / end (en secondes) optionnels pour ne montrer qu'un extrait
    - highlight : lien vers une compilation qui s'ouvre sur YouTube
@@ -32,8 +34,8 @@ window.POSTES = [
     jeu10: "En mêlée, vous êtes 3 devant : 2 piliers et le talonneur au milieu. Tu pousses dans l'axe jusqu'à ce que le ballon soit gagné.",
     pourToi: ["tu es costaud et solide", "tu aimes pousser et le contact", "tu ne lâches jamais rien"],
     heros: [
-      { nom: "Cyril Baille", info: "Pilier gauche · Stade Toulousain", photo: "" },
-      { nom: "Dorian Aldegheri", info: "Pilier droit · Stade Toulousain", photo: "" }
+      { nom: "Cyril Baille", info: "Pilier gauche · Stade Toulousain", photo: "", commons: "Cyril_Baille_cropped.jpg", credit: "PierreSelim / Blackcat · CC BY-SA 3.0" },
+      { nom: "Dorian Aldegheri", info: "Pilier droit · Stade Toulousain", photo: "", commons: "Dorian_Aldegheri.jpg", credit: "LightPrimeape · CC BY-SA 4.0" }
     ],
     videos: [
       { id: "eC-N_-vMB1Y", titre: "Un pro présente le poste de pilier gauche", source: "Jefferson Poirot · Ligue nationale de rugby" },
@@ -64,8 +66,8 @@ window.POSTES = [
     jeu10: "En mêlée, tu es au milieu des 3 joueurs de devant, avec 2 coéquipiers liés à côté. En touche, c'est toi qui lances.",
     pourToi: ["tu aimes le contact ET courir", "tu es précis avec tes mains", "tu veux être au cœur de l'action"],
     heros: [
-      { nom: "Julien Marchand", info: "Talonneur · Stade Toulousain", photo: "" },
-      { nom: "Peato Mauvaka", info: "Talonneur · Stade Toulousain", photo: "" }
+      { nom: "Julien Marchand", info: "Talonneur · Stade Toulousain", photo: "", commons: "European_Rugby_Champions_Cup_24-25-_RC_Toulonnais_vs_Stade_Toulousain-61-Migliorato-NR_(54468571137)_(cropped).jpg", credit: "Stefano Delfrate · CC BY-SA 2.0" },
+      { nom: "Peato Mauvaka", info: "Talonneur · Stade Toulousain", photo: "", commons: "PeatoMauvaka2022.png", credit: "Société Générale · CC BY 3.0" }
     ],
     videos: [
       { id: "CxeqbzT9rIA", titre: "Un pro présente le poste de talonneur", source: "Guilhem Guirado · Ligue nationale de rugby" },
@@ -96,8 +98,8 @@ window.POSTES = [
     jeu10: "En mêlée, tu es lié debout à côté du pilier, sans pousser. Tu joues dès que la mêlée est finie : sois prêt à partir plaquer ou soutenir !",
     pourToi: ["tu adores plaquer", "tu as de l'énergie à revendre", "tu veux toujours récupérer le ballon"],
     heros: [
-      { nom: "François Cros", info: "3e ligne · Stade Toulousain", photo: "" },
-      { nom: "Thierry Dusautoir", info: "Légende du Stade Toulousain", photo: "" }
+      { nom: "François Cros", info: "3e ligne · Stade Toulousain", photo: "", commons: "FrancoisCrosToulouse2018(cropped).jpg", credit: "Helene Brasseur · CC BY 2.0" },
+      { nom: "Thierry Dusautoir", info: "Légende du Stade Toulousain", photo: "", commons: "Thierry_Dusautoir_2014.jpg", credit: "Patrick Subotkiewiez · CC BY 2.0" }
     ],
     videos: [
       { id: "HP_tPxjhOiM", titre: "Un pro présente le poste de 3e ligne aile", source: "Julien Puricelli · Ligue nationale de rugby" },
@@ -128,8 +130,8 @@ window.POSTES = [
     jeu10: "C'est toi qui introduis le ballon en mêlée. La mêlée se termine quand tu soulèves le ballon : à toi de jouer !",
     pourToi: ["tu as des mains rapides", "tu aimes parler et diriger", "tu veux toucher le ballon tout le temps"],
     heros: [
-      { nom: "Antoine Dupont", info: "Demi de mêlée · Stade Toulousain", photo: "" },
-      { nom: "Jean-Baptiste Élissalde", info: "Légende du Stade Toulousain", photo: "" }
+      { nom: "Antoine Dupont", info: "Demi de mêlée · Stade Toulousain", photo: "", commons: "Antoine_Dupont_February_2023.jpg", credit: "stede64 · CC BY-SA 2.0" },
+      { nom: "Jean-Baptiste Élissalde", info: "Légende du Stade Toulousain", photo: "", commons: "JBE_2011-10-01_01.JPG", credit: "PierreSelim · CC BY 3.0" }
     ],
     videos: [
       { id: "qDc34wVBv3c", titre: "Un pro présente le poste de demi de mêlée", source: "Tom Ecochard · Ligue nationale de rugby" },
@@ -160,8 +162,8 @@ window.POSTES = [
     jeu10: "Au jeu à 10, le jeu au pied est autorisé : un bon coup de pied peut faire gagner beaucoup de terrain.",
     pourToi: ["tu aimes réfléchir et décider", "tu as une bonne passe", "tu aimes taper au pied"],
     heros: [
-      { nom: "Romain Ntamack", info: "Demi d'ouverture · Stade Toulousain", photo: "" },
-      { nom: "Frédéric Michalak", info: "Légende du Stade Toulousain", photo: "" }
+      { nom: "Romain Ntamack", info: "Demi d'ouverture · Stade Toulousain", photo: "", commons: "RomainNtamack2023.png", credit: "Société Générale · CC BY 3.0" },
+      { nom: "Frédéric Michalak", info: "Légende du Stade Toulousain", photo: "", commons: "Frédéric_Michalak.jpg", credit: "y.caradec · CC BY-SA 2.0" }
     ],
     videos: [
       { id: "IJ9GQHRl0sE", titre: "Romain Ntamack présente le poste d'ouvreur", source: "Ligue nationale de rugby" },
@@ -192,8 +194,8 @@ window.POSTES = [
     jeu10: "Au jeu à 10, le terrain fait 45 m de large : le centre a de l'espace pour percer, et beaucoup de plaquages à faire.",
     pourToi: ["tu aimes foncer et percer", "tu n'as pas peur de plaquer", "tu as de bonnes mains"],
     heros: [
-      { nom: "Pita Ahki", info: "Centre · Stade Toulousain", photo: "" },
-      { nom: "Yannick Jauzion", info: "Légende du Stade Toulousain", photo: "" }
+      { nom: "Pita Ahki", info: "Centre · Stade Toulousain", photo: "", commons: "Pita_Ahki_2018.jpg", credit: "Patrick S. · CC BY-SA 2.0" },
+      { nom: "Yannick Jauzion", info: "Légende du Stade Toulousain", photo: "", commons: "Yannick_Jauzion_2011-10-01_01.JPG", credit: "PierreSelim · CC BY 3.0" }
     ],
     videos: [
       { id: "NiBVXR87kGo", titre: "Gaël Fickou présente le poste de centre", source: "Ligue nationale de rugby" },
@@ -224,8 +226,8 @@ window.POSTES = [
     jeu10: "Au jeu à 10, le terrain fait 45 m de large : l'ailier a de la place sur son côté pour faire parler sa vitesse.",
     pourToi: ["tu cours très vite", "tu aimes marquer des essais", "tu sais accélérer et feinter"],
     heros: [
-      { nom: "Matthis Lebel", info: "Ailier · Stade Toulousain", photo: "" },
-      { nom: "Vincent Clerc", info: "Légende du Stade Toulousain", photo: "" }
+      { nom: "Matthis Lebel", info: "Ailier · Stade Toulousain", photo: "", commons: "MatthisLebel2022.png", credit: "Société Générale · CC BY 3.0" },
+      { nom: "Vincent Clerc", info: "Légende du Stade Toulousain", photo: "", commons: "Vincent_Clerc_cropped.jpg", credit: "Blackcat · CC BY 2.0" }
     ],
     videos: [
       { id: "VcpIfdBghNk", titre: "Maxime Médard présente le poste d'ailier", source: "Ligue nationale de rugby" },

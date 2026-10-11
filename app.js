@@ -199,8 +199,10 @@
     }).join("");
     var li = function (a) { return a.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join(""); };
     var heroes = p.heros.map(function (h) {
-      var ph = h.photo ? '<img src="' + esc(h.photo) + '" alt="' + esc(h.nom) + '" loading="lazy">' : SILHOUETTE;
-      return '<div class="heroc"><div class="heroc__ph">' + ph + '</div><div class="heroc__txt"><b>' + esc(h.nom) + "</b><small>" + esc(h.info) + "</small></div></div>";
+      var src = h.photo || (h.commons ? "https://commons.wikimedia.org/wiki/Special:FilePath/" + encodeURIComponent(h.commons) + "?width=480" : "");
+      var ph = src ? '<img src="' + esc(src) + '" alt="' + esc(h.nom) + '" loading="lazy" onerror="this.remove()">' : "";
+      var cr = (h.commons && h.credit) ? '<a class="heroc__cr" href="https://commons.wikimedia.org/wiki/File:' + encodeURIComponent(h.commons) + '" target="_blank" rel="noopener">Photo : ' + esc(h.credit) + "</a>" : "";
+      return '<div class="heroc"><div class="heroc__ph">' + SILHOUETTE + ph + cr + '</div><div class="heroc__txt"><b>' + esc(h.nom) + "</b><small>" + esc(h.info) + "</small></div></div>";
     }).join("");
     var vids = p.videos.map(function (v) {
       return '<div class="vid"><div class="vid__frame" data-vid="' + esc(v.id) + '" data-start="' + (v.start || "") + '" data-end="' + (v.end || "") + '">' +

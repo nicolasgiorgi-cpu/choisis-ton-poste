@@ -228,7 +228,7 @@
       '<section class="j10"><span>JEU À 10</span><span>' + esc(p.jeu10) + "</span></section>" +
       '<section><h3 class="sh">Fait pour toi si…</h3><div class="fit">' + p.pourToi.map(function (t) { return "<span>" + esc(t) + "</span>"; }).join("") + "</div></section>" +
       '<section><h3 class="sh">Ils jouent à ce poste au Stade Toulousain</h3><div class="heroes">' + heroes + "</div></section>" +
-      '<section><h3 class="sh">Regarde-le en action</h3><div class="videos">' + vids + hl + "</div></section>" +
+      '<section><h3 class="sh">Regarde-le en action</h3><div class="videos">' + hl + vids + "</div></section>" +
       "</div>" +
       '<div class="d-action fade"><div class="d-action__in">' +
       '<div class="act-row"><span class="act-lbl" id="d-lbl"></span></div>' +
@@ -492,6 +492,19 @@
     renderGrid(); renderFeature(); renderBar(); renderSent(); refreshDetailAction();
     if (!form.hidden && $("#picks")) $("#picks").innerHTML = picksHTML(true);
   }
+
+  /* barres de Safari / Chrome mobile : on remonte la barre du bas si elles recouvrent la page */
+  function syncViewport() {
+    var vv = window.visualViewport;
+    var hidden = vv ? Math.max(0, window.innerHeight - (vv.height + vv.offsetTop)) : 0;
+    document.documentElement.style.setProperty("--vvb", Math.round(hidden) + "px");
+  }
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", syncViewport);
+    window.visualViewport.addEventListener("scroll", syncViewport);
+  }
+  window.addEventListener("resize", syncViewport);
+  syncViewport();
 
   refreshAll();
   route();

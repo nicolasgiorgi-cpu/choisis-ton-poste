@@ -99,7 +99,7 @@ window.POSTES = [
     pourToi: ["tu adores plaquer", "tu as de l'énergie à revendre", "tu veux toujours récupérer le ballon"],
     heros: [
       { nom: "François Cros", info: "3e ligne · Stade Toulousain", photo: "", commons: "FrancoisCrosToulouse2018(cropped).jpg", credit: "Helene Brasseur · CC BY 2.0" },
-      { nom: "Thierry Dusautoir", info: "Légende du Stade Toulousain", photo: "", commons: "Thierry_Dusautoir_2014.jpg", credit: "Patrick Subotkiewiez · CC BY 2.0" }
+      { nom: "Anthony Jelonch", info: "3e ligne · Stade Toulousain", photo: "", commons: "AnthonyJelonch2019.png", credit: "Castres Olympique · CC BY 3.0" }
     ],
     videos: [
       { id: "HP_tPxjhOiM", titre: "Un pro présente le poste de 3e ligne aile", source: "Julien Puricelli · Ligue nationale de rugby" },
@@ -131,7 +131,7 @@ window.POSTES = [
     pourToi: ["tu as des mains rapides", "tu aimes parler et diriger", "tu veux toucher le ballon tout le temps"],
     heros: [
       { nom: "Antoine Dupont", info: "Demi de mêlée · Stade Toulousain", photo: "", commons: "Antoine_Dupont_February_2023.jpg", credit: "stede64 · CC BY-SA 2.0" },
-      { nom: "Jean-Baptiste Élissalde", info: "Légende du Stade Toulousain", photo: "", commons: "JBE_2011-10-01_01.JPG", credit: "PierreSelim · CC BY 3.0" }
+      { nom: "Paul Graou", info: "Demi de mêlée · Stade Toulousain", photo: "", commons: "Paul_Graou_2025.jpg", credit: "Stefano Delfrate · CC BY-SA 2.0" }
     ],
     videos: [
       { id: "qDc34wVBv3c", titre: "Un pro présente le poste de demi de mêlée", source: "Tom Ecochard · Ligue nationale de rugby" },
@@ -145,8 +145,8 @@ window.POSTES = [
     code: "10",
     nom: "Demi d'ouverture",
     numeros: "N°10 · charnière",
-    surnom: "Le Cerveau",
-    cls: "Stratège · jeu au pied",
+    surnom: "Le Stratège",
+    cls: "Décideur · jeu au pied",
     groupe: "Trois-quarts",
     color: "#A78BFF",
     dark: "#43307A",
@@ -163,7 +163,7 @@ window.POSTES = [
     pourToi: ["tu aimes réfléchir et décider", "tu as une bonne passe", "tu aimes taper au pied"],
     heros: [
       { nom: "Romain Ntamack", info: "Demi d'ouverture · Stade Toulousain", photo: "", commons: "RomainNtamack2023.png", credit: "Société Générale · CC BY 3.0" },
-      { nom: "Frédéric Michalak", info: "Légende du Stade Toulousain", photo: "", commons: "Frédéric_Michalak.jpg", credit: "y.caradec · CC BY-SA 2.0" }
+      { nom: "Thomas Ramos", info: "Ouvreur et arrière · Stade Toulousain", photo: "", commons: "Thomas_Ramos_2018.jpg", credit: "Patrick S. · CC BY-SA 2.0" }
     ],
     videos: [
       { id: "IJ9GQHRl0sE", titre: "Romain Ntamack présente le poste d'ouvreur", source: "Ligue nationale de rugby" },
@@ -194,8 +194,8 @@ window.POSTES = [
     jeu10: "Au jeu à 10, le terrain fait 45 m de large : le centre a de l'espace pour percer, et beaucoup de plaquages à faire.",
     pourToi: ["tu aimes foncer et percer", "tu n'as pas peur de plaquer", "tu as de bonnes mains"],
     heros: [
-      { nom: "Pita Ahki", info: "Centre · Stade Toulousain", photo: "", commons: "Pita_Ahki_2018.jpg", credit: "Patrick S. · CC BY-SA 2.0" },
-      { nom: "Yannick Jauzion", info: "Légende du Stade Toulousain", photo: "", commons: "Yannick_Jauzion_2011-10-01_01.JPG", credit: "PierreSelim · CC BY 3.0" }
+      { nom: "Pierre-Louis Barassi", info: "Centre · Stade Toulousain", photo: "", commons: "PierreLouisBarassi2022.png", credit: "Société Générale · CC BY 3.0" },
+      { nom: "Tommaso Menoncello", info: "Centre · Stade Toulousain", photo: "", commons: "Tommaso_Menoncello_2023.jpg", credit: "Stefano Delfrate · CC BY-SA 2.0" }
     ],
     videos: [
       { id: "NiBVXR87kGo", titre: "Gaël Fickou présente le poste de centre", source: "Ligue nationale de rugby" },
@@ -227,7 +227,7 @@ window.POSTES = [
     pourToi: ["tu cours très vite", "tu aimes marquer des essais", "tu sais accélérer et feinter"],
     heros: [
       { nom: "Matthis Lebel", info: "Ailier · Stade Toulousain", photo: "", commons: "MatthisLebel2022.png", credit: "Société Générale · CC BY 3.0" },
-      { nom: "Vincent Clerc", info: "Légende du Stade Toulousain", photo: "", commons: "Vincent_Clerc_cropped.jpg", credit: "Blackcat · CC BY 2.0" }
+      { nom: "Teddy Thomas", info: "Ailier · Stade Toulousain", photo: "", commons: "TEDDY_THOMAS.jpg", credit: "Victor1765 · CC BY-SA 4.0" }
     ],
     videos: [
       { id: "VcpIfdBghNk", titre: "Maxime Médard présente le poste d'ailier", source: "Ligue nationale de rugby" },

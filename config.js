@@ -16,6 +16,7 @@ window.CONFIG = {
     choix1: "entry.321605478",
     choix2: "entry.144448490",
     choix3: "entry.1984140708",
-    message: "entry.1130469255"
+    message: "entry.1130469255",
+    test: "entry.918237936" /* résumé du test « Aide-moi à choisir » */
   }
 };

@@ -441,6 +441,7 @@
     fd.append(c.choix1, names[0]); fd.append(c.choix2, names[1] || "—");
     if (c.choix3) fd.append(c.choix3, names[2] || "—");
     if (c.message && msg) fd.append(c.message, msg);
+    if (c.test) fd.append(c.test, quizSummary());
     fetch(CONFIG.formAction, { method: "POST", mode: "no-cors", body: fd })
       .then(function () { done(true); })
       .catch(function () { done(false); });
@@ -461,7 +462,7 @@
   var P = "pilier", T = "talonneur", L = "troisieme-ligne", N = "demi-de-melee", O = "ouvreur", C = "centre", A = "ailier";
   function W() { var o = {}; for (var i = 0; i < arguments.length; i += 2) o[arguments[i]] = arguments[i + 1]; return o; }
   var QUIZ = [
-    { q: "Sur le terrain, ce que tu préfères…", opts: [
+    { q: "Sur le terrain, ce que tu préfères…", k: "Préfère", opts: [
       { t: "Pousser et aller au contact", i: "belier", w: W(P, 3, T, 2, L, 1), why: "le contact" },
       { t: "Plaquer et récupérer le ballon", i: "griffe", w: W(L, 3, C, 2, T, 1), why: "plaquer et récupérer" },
       { t: "Courir vite et marquer des essais", i: "turbo", w: W(A, 3, C, 1, T, 1), why: "courir et marquer" },
@@ -469,26 +470,26 @@
       { t: "Taper au pied", i: "pied", w: W(O, 3, N, 1), why: "le jeu au pied" },
       { t: "Foncer pour percer la défense", i: "perce", w: W(C, 3, L, 1, P, 1), why: "percer la défense" }
     ] },
-    { q: "Ton point fort\u00a0?", opts: [
+    { q: "Ton point fort\u00a0?", k: "Point fort", opts: [
       { t: "Je suis costaud, dur à faire tomber", i: "bouclier", w: W(P, 3, C, 1, T, 1, L, 1), why: "ton côté costaud" },
       { t: "Je suis très rapide", i: "turbo", w: W(A, 3, N, 1, T, 1), why: "ta vitesse" },
       { t: "J'ai de l'énergie à revendre", i: "radar", w: W(L, 3, N, 2, T, 1), why: "ton énergie" },
       { t: "J'esquive et je feinte", i: "feinte", w: W(A, 2, O, 2, N, 1, C, 1), why: "tes feintes" },
       { t: "J'ai des mains très adroites", i: "aimant", w: W(N, 2, T, 2, O, 1, C, 1), why: "tes mains adroites" }
     ] },
-    { q: "En défense, ton truc c'est…", opts: [
+    { q: "En défense, ton truc c'est…", k: "En défense", opts: [
       { t: "Plaquer fort, même les plus grands", i: "bouclier", w: W(C, 3, L, 2, P, 1), why: "les gros plaquages" },
       { t: "Être le premier sur le ballon au sol", i: "aimant", w: W(L, 3, T, 2, N, 1), why: "gratter les ballons" },
       { t: "Tenir le bloc avec les copains (mêlée, maul)", i: "colonne", w: W(P, 3, T, 2, L, 1), why: "tenir le bloc" },
       { t: "Rattraper celui qui s'échappe", i: "turbo", w: W(A, 3, O, 1, N, 1), why: "rattraper les échappés" }
     ] },
-    { q: "Ballon en main, tu…", opts: [
+    { q: "Ballon en main, tu…", k: "Ballon en main, tu", opts: [
       { t: "Fonces dans le tas", i: "belier", w: W(P, 2, C, 2, L, 1, T, 1), why: "foncer dans le tas" },
-      { t: "Cherches l'espace et tu sprintes", i: "turbo", w: W(A, 3, C, 1), why: "sprinter dans l'espace" },
+      { t: "Cherches l'espace et sprintes", i: "turbo", w: W(A, 3, C, 1), why: "sprinter dans l'espace" },
       { t: "Fais la passe au bon moment", i: "eclair", w: W(N, 2, O, 2, C, 1), why: "la passe au bon moment" },
       { t: "Tapes au pied pour gagner du terrain", i: "pied", w: W(O, 3, N, 1), why: "gagner du terrain au pied" }
     ] },
-    { q: "Dans l'équipe, tu…", opts: [
+    { q: "Dans l'équipe, tu…", k: "Dans l'équipe, tu", opts: [
       { t: "Parles et organises le jeu", i: "oeil", w: W(O, 3, N, 2), why: "organiser le jeu" },
       { t: "Ne lâches jamais rien", i: "colonne", w: W(P, 2, L, 2, T, 1), why: "ne rien lâcher" },
       { t: "Finis les actions et marques", i: "essai", w: W(A, 3, C, 1), why: "finir les actions" },
@@ -505,11 +506,12 @@
   }
   function quizDone() { return !!(state.quiz && state.quiz.ans && state.quiz.ans.length === QUIZ.length); }
 
-  function quizResults() {
+  function quizResults(ans) {
+    ans = ans || quiz.ans;
     var res = POSTES.map(function (p, idx) {
       var raw = 0, ideal = 0, whys = [];
       QUIZ.forEach(function (Q, k) {
-        var best = 0, sel = quiz.ans[k] || [];
+        var best = 0, sel = ans[k] || [];
         Q.opts.forEach(function (o, j) {
           var w = o.w[p.id] || 0;
           if (w > best) best = w;
@@ -524,11 +526,27 @@
     return res.slice(0, 3);
   }
 
+  /* résumé du test pour les éducateurs (colonne « Test Aide-moi à choisir » du Google Form) */
+  function quizSummary() {
+    if (!quizDone()) return "Pas fait";
+    var ans = state.quiz.ans;
+    var lines = ["Postes proposés : " + quizResults(ans).map(function (x, i) {
+      return (i + 1) + ". " + x.p.nom + " (" + x.pct + " %)";
+    }).join(" · ")];
+    QUIZ.forEach(function (Q, k) {
+      var picked = (ans[k] || []).map(function (j) { return Q.opts[j] && Q.opts[j].t; }).filter(Boolean);
+      if (!picked.length) return;
+      if (/ tu$/.test(Q.k)) lines.push(Q.k + " " + picked.map(function (t) { return t.charAt(0).toLowerCase() + t.slice(1); }).join(" / "));
+      else lines.push(Q.k + " : " + picked.join(" / "));
+    });
+    return lines.join("\n");
+  }
+
   var Q_SYM = '<g fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M38 38c0-8 5.5-13 12-13s12 4.5 12 11c0 9-12 9.5-12 19"/></g><circle cx="50" cy="68" r="4.5" fill="currentColor"/>';
   function quizCardHTML() {
     var last = "";
     if (quizDone()) {
-      last = '<span class="qc__last">Ton résultat : ' + quizResults().map(function (x) { return esc(x.p.nom); }).join(" · ") + "</span>";
+      last = '<span class="qc__last">Ton résultat : ' + quizResults(state.quiz.ans).map(function (x) { return esc(x.p.nom); }).join(" · ") + "</span>";
     }
     return '<div class="tilt tilt--quiz" style="--c:#38E8FF;--d:#FF4FA3;--glow2:rgba(56,232,255,.22)">' +
       '<button type="button" class="card card--quiz" data-quiz aria-label="Aide-moi à choisir : 5 questions pour trouver les postes faits pour toi">' +

@@ -25,7 +25,7 @@ Pour modifier ensuite : ouvre le fichier sur GitHub, icône crayon, modifie, **C
 
 ## Le formulaire (Google Form)
 
-Le site est branché sur le Google Form « M12 - 26/27 - Choix de postes » (questions Prénom, Nom, Choix 1, Choix 2, Choix 3, Message). Les réponses arrivent dans l'onglet **Réponses** du Form ; bouton « Associer à Sheets » pour les avoir dans une Google Sheet. Chaque envoi = une ligne datée ; c'est le dernier envoi d'un enfant qui compte.
+Le site est branché sur le Google Form « M12 - 26/27 - Choix de postes » (questions Prénom, Nom, Choix 1, Choix 2, Choix 3, Message, Test Aide-moi à choisir). Les réponses arrivent dans l'onglet **Réponses** du Form ; bouton « Associer à Sheets » pour les avoir dans une Google Sheet. Chaque envoi = une ligne datée ; c'est le dernier envoi d'un enfant qui compte.
 
 Les enfants peuvent envoyer 1, 2 ou 3 choix : un choix non fait arrive dans le Form sous la forme « — ».
 
@@ -57,4 +57,4 @@ Dans `data.js`, remplace l'`id` (ce qui suit `watch?v=` dans l'adresse YouTube).
 
 ## Le test « Aide-moi à choisir »
 
-La carte en haut de la liste lance 5 questions (1 ou 2 réponses à chaque fois). Chaque réponse donne des points aux postes ; à la fin, les 3 postes les plus compatibles s'affichent dans l'ordre, et l'enfant peut les garder dans ses choix. Les questions, les réponses et les points sont dans `app.js`, tableau `QUIZ` (P = pilier, T = talonneur, L = 3e ligne, N = demi de mêlée, O = ouvreur, C = centre, A = ailier).
+La carte en haut de la liste lance 5 questions (1 ou 2 réponses à chaque fois). Chaque réponse donne des points aux postes ; à la fin, les 3 postes les plus compatibles s'affichent dans l'ordre, et l'enfant peut les garder dans ses choix. À l'envoi, la colonne « Test Aide-moi à choisir » du Form reçoit les postes proposés et les réponses cochées (ou « Pas fait »). Les questions, les réponses et les points sont dans `app.js`, tableau `QUIZ` (P = pilier, T = talonneur, L = 3e ligne, N = demi de mêlée, O = ouvreur, C = centre, A = ailier).
